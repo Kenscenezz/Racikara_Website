@@ -7,7 +7,7 @@ use App\Http\Controllers\RecipeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
- Route::get('/my-recipes', [RecipeController::class, 'myRecipes'])->name('recipes.mine');
+    Route::get('/my-recipes', [RecipeController::class, 'myRecipes'])->name('recipes.mine');
     Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
     Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
     Route::delete('/recipes/{id}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
