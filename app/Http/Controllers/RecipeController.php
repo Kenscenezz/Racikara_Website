@@ -142,6 +142,65 @@ class RecipeController extends Controller
         return redirect()->route('recipes.mine')->with('success', 'Resep berhasil diupload!');
     }
 
+    public function edit($id)
+    {
+        $recipe = Recipe::where('user_id', Auth::id())->findOrFail($id);
+        $categories = Category::all();
+        
+        // Parse strings to arrays for the form
+        $ingredients = array_filter(array_map('trim', explode("\n", $recipe->ingredients)));
+        $steps = array_filter(array_map('trim', explode("\n", $recipe->steps)));
+
+        return view('edit-resep', compact('recipe', 'categories', 'ingredients', 'steps'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $recipe = Recipe::where('user_id', Auth::id())->findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:200',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'cooking_time' => 'required|integer|min:1',
+            'portion' => 'required|integer|min:1',
+            'difficulty' => 'required|in:Mudah,Sedang,Sulit',
+            'ingredients' => 'required|array|min:1',
+            'steps' => 'required|array|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists and isn't the placeholder
+            if ($recipe->image && $recipe->image !== 'placeholder-food.jpg') {
+                $oldImagePath = public_path('assets/img/' . $recipe->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+            
+            $imageName = time() . '_' . rand(1000, 9999) . '.' . $request->file('image')->extension();
+            $request->file('image')->move(public_path('assets/img'), $imageName);
+            $recipe->image = $imageName;
+        }
+
+        $ingredientsStr = implode("\n", array_filter(array_map('trim', $request->ingredients)));
+        $stepsStr = implode("\n", array_filter(array_map('trim', $request->steps)));
+
+        $recipe->update([
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'ingredients' => $ingredientsStr,
+            'steps' => $stepsStr,
+            'cooking_time' => $request->cooking_time,
+            'difficulty' => $request->difficulty,
+            'portion' => $request->portion,
+        ]);
+
+        return redirect()->route('recipes.show', $recipe->id)->with('success', 'Resep berhasil diperbarui!');
+    }
+
     public function destroy($id)
     {
         $recipe = Recipe::where('user_id', Auth::id())->findOrFail($id);

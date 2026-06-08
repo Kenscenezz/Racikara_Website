@@ -15,12 +15,16 @@
     $isOwner = Auth::check() && Auth::id() == $recipe->user_id;
     $isAdmin = Auth::check() && Auth::user()->role === 'admin';
     
+    $editBtn = '';
     $deleteBtn = '';
+    if ($isOwner) {
+        $editBtn = '<a href="'.route('recipes.edit', $recipe->id).'" class="btn btn-outline btn-sm">✏️ Edit</a> ';
+    }
     if ($isOwner || $isAdmin) {
         $deleteBtn = '<button type="button" onclick="openDeleteModal()" class="btn btn-danger btn-sm">🗑️ Hapus</button>';
     }
     
-    $topbarActions = '<button class="btn btn-ghost" onclick="shareRecipe()" id="shareBtn" title="Bagikan">📤 Bagikan</button> ' . $deleteBtn;
+    $topbarActions = '<button class="btn btn-ghost" onclick="shareRecipe()" id="shareBtn" title="Bagikan">📤 Bagikan</button> ' . $editBtn . $deleteBtn;
 @endphp
 @include('layouts.topbar', ['topbarBack' => $topbarBack, 'topbarBackLabel' => $topbarBackLabel, 'topbarTitle' => $topbarTitle, 'topbarActions' => $topbarActions])
 
