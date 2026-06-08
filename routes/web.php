@@ -7,6 +7,11 @@ use App\Http\Controllers\RecipeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+ Route::get('/my-recipes', [RecipeController::class, 'myRecipes'])->name('recipes.mine');
+    Route::get('/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
+    Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
+    Route::delete('/recipes/{id}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -21,3 +26,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
 });
 
+require __DIR__.'/auth.php';
