@@ -178,7 +178,7 @@
                                     placeholder="2"
                                     min="1"
                                     max="100"
-                                    value="{{ old('portion', 2) }}"
+                                    value="{{ old('portion') }}"
                                     id="portionInput"
                                     oninput="updatePreview()"
                                 >

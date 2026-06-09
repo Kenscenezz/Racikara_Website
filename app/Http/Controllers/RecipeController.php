@@ -108,8 +108,9 @@ class RecipeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'cooking_time' => 'required|integer|min:1',
-            'portion' => 'required|integer|min:1',
+            'portion' => 'nullable|integer|min:1',
             'difficulty' => 'required|in:Mudah,Sedang,Sulit',
+            'calories' => 'nullable|integer|min:0|max:99999',
             'ingredients' => 'required|array|min:1',
             'steps' => 'required|array|min:1',
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
@@ -133,8 +134,8 @@ class RecipeController extends Controller
             'steps' => $stepsStr,
             'cooking_time' => $request->cooking_time,
             'difficulty' => $request->difficulty,
-            'portion' => $request->portion,
-            'calories' => rand(200, 800), // Random calories for now
+            'portion' => $request->portion ?: null,
+            'calories' => $request->filled('calories') ? (int) $request->calories : null,
             'image' => $imageName,
             'status' => 'published',
         ]);
@@ -163,8 +164,9 @@ class RecipeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'cooking_time' => 'required|integer|min:1',
-            'portion' => 'required|integer|min:1',
+            'portion' => 'nullable|integer|min:1',
             'difficulty' => 'required|in:Mudah,Sedang,Sulit',
+            'calories' => 'nullable|integer|min:0|max:99999',
             'ingredients' => 'required|array|min:1',
             'steps' => 'required|array|min:1',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
@@ -195,7 +197,8 @@ class RecipeController extends Controller
             'steps' => $stepsStr,
             'cooking_time' => $request->cooking_time,
             'difficulty' => $request->difficulty,
-            'portion' => $request->portion,
+            'portion' => $request->portion ?: null,
+            'calories' => $request->filled('calories') ? (int) $request->calories : null,
         ]);
 
         return redirect()->route('recipes.show', $recipe->id)->with('success', 'Resep berhasil diperbarui!');
