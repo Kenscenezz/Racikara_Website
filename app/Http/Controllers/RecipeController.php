@@ -134,8 +134,8 @@ class RecipeController extends Controller
             'steps' => $stepsStr,
             'cooking_time' => $request->cooking_time,
             'difficulty' => $request->difficulty,
-            'portion' => $request->portion ?: null,
-            'calories' => $request->filled('calories') ? (int) $request->calories : null,
+            'portion' => $request->filled('portion') ? (int) $request->portion : 1,
+            'calories' => $request->filled('calories') ? (int) $request->calories : 0,
             'image' => $imageName,
             'status' => 'published',
         ]);
@@ -197,8 +197,8 @@ class RecipeController extends Controller
             'steps' => $stepsStr,
             'cooking_time' => $request->cooking_time,
             'difficulty' => $request->difficulty,
-            'portion' => $request->portion ?: null,
-            'calories' => $request->filled('calories') ? (int) $request->calories : null,
+            'portion' => $request->filled('portion') ? (int) $request->portion : 1,
+            'calories' => $request->filled('calories') ? (int) $request->calories : 0,
         ]);
 
         return redirect()->route('recipes.show', $recipe->id)->with('success', 'Resep berhasil diperbarui!');
